@@ -1,0 +1,128 @@
+<style>
+.topper{
+display:block;
+position:fixed;
+left:0px;
+top:0px;
+bottom:0px;
+width:50px;
+border:0px;
+
+}
+           .shover{
+            display:block;
+            width:200px;
+            height:200px;
+            margin:0 auto;
+            background:url('/img/search.png');
+           }
+           .shover:hover{
+            background:url('/img/search.png')0 200px;
+           }
+.topper:hover{
+background:#f4f4f4;
+}
+           .phover{
+            display:block;
+            width:200px;
+            height:200px;
+            margin:0 auto;
+            background:url('/img/profile.png');
+           }
+           .phover:hover{
+            background:url('/img/profile.png')0 200px;
+           }
+          .ico{
+            outline:1px solid lightgray;
+          }
+          .ico:hover{
+            outline:1px solid #a7a7a7;
+          }
+</style>
+<div class="container">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <div class="span9"><a href="/"><img src="/img/donorsearch.jpg" id="#top" /></a></div>
+                    <span class="span1"></span>
+                    <div class="span2 thumbnail" place="userauthtop" style="height:100px;">
+ <?php
+    if ( User::get() )
+    {
+    	require 'UserAuthTop.phtml';
+    }
+    else
+    {
+    	require 'UserUnAuthTop.phtml';
+    }
+ ?>
+                    </div>
+                </div>
+                <hr />
+            </div>
+            <a href="#top" class="topper" style="outline:none;color:white;text-align:center;text-decoration:none;">Up</a>
+        </div>
+ <div place="content">
+    <?php 
+        if ( $_SERVER['REQUEST_URI'] == '/' || $_SERVER['REQUEST_URI'] == '/index.php' )
+        {
+            require 'Start.phtml';
+        }
+        else
+        {
+            require 'ContentBody.phtml';
+        }
+    ?>
+ </div>
+    <div class="row-fluid">
+      <div class="span12" style="padding-top:20px;">
+        <hr />
+        
+        <div class="row-fluid">
+          <div class="span3">
+            <ul class="nav nav-list">
+              <li class="nav-header">Ссылки</li>
+              <li><a href="/about#how">Как это работает</a></li>
+              <li><a href="/about#mission">Наша миссия</a></li>
+              <li><a href="/about#sponsors">Партнеры и спонсоры</a></li>
+              <li><a href="#">Правила пользования</a></li>
+              <li><a href="/about#crew">Контакты</a></li>
+              <br />
+                          <!--LiveInternet counter-->
+            </ul>
+            
+       </div>
+          <div class="span6">
+            <ul class="nav nav-list">
+              <li class="nav-header" style="padding-bottom:10px;">Рассказать о проекте друзьям</li>
+              <a onclick="window.open('http://vkontakte.ru/share.php?url=http://donorsearch.ru', 'ВКонтакте', 'width=626, height=436'); return false;" href="http://vkontakte.ru/share.php?url=http://donorsearch.ru" rel="nofollow" class="ico"><img src="/img/ico_Vkontakte.png" width="40" height="40" title="Поделиться с друзьями ВКонтакте" /></a>
+              &nbsp;&nbsp;&nbsp;
+              <a onclick="window.open('http://www.facebook.com/sharer.php?u=http://donorsearch.ru', 'facebook', 'width=626, height=436'); return false;" rel="nofollow" href="http://www.facebook.com/sharer.php?u=http://donorsearch.ru" class="ico"><img src="img/ico_Facebook.png" width="40" height="40" title="Поделиться с друзьями в Facebook" /></a>
+              &nbsp;&nbsp;&nbsp;
+              <a rel="nofollow" title="Опубликовать в Twitter" href="#" name="twitter" onclick="window.open('http://twitter.com/share?&amp;text=&laquo;DonorSearch&raquo; &mdash; Социальный ресурс для доноров крови и нуждающихся в них людей  &amp;url=http://donorsearch.ru');" class="ico"><img src="img/ico_Twitter.png" alt="Опубликовать в Twitter" /></a>
+              &nbsp;&nbsp;&nbsp;
+              <a onclick="window.open('http://www.odnoklassniki.ru/dk?st.cmd=addShare&amp;st.s=1&amp;st._surl=http://donorsearch.ru', 'odkl', 'width=626, height=436'); return false;" rel="nofollow" href="http://www.odnoklassniki.ru/dk?st.cmd=addShare&amp;st.s=1&amp;st._surl=http://donorsearch.ru" class="ico"><img src="img/ico_OK.png" width="40" height="40" title="Поделиться с друзьями в Одноклассниках" /></a>
+              &nbsp;&nbsp;&nbsp;
+              <a rel="nofollow" title="Опубликовать в Google+" href="https://plus.google.com/share?url=http://donorsearch.ru" name="google" onclick="window.open('https://plus.google.com/share?url=http://donorsearch.ru', 'width=626, height=436');return false;" rel="nofollow" class="ico"><img src="img/ico_Google.png" alt="Опубликовать в Google Plus" /></a>
+              &nbsp;&nbsp;&nbsp;
+              <a onclick="window.open('http://www.livejournal.com/update.bml?event=&laquo;DonorSearch&raquo; &mdash; Социальный ресурс для доноров крови и нуждающихся в них людей http://donorsearch.ru&amp;subject=&laquo;DonorSearch&raquo;', 'lj'); return false;" rel="nofollow" href="http://www.livejournal.com/update.bml?event=&laquo;DonorSearch&raquo; &mdash; Социальный ресурс для доноров крови и нуждающихся в них людей http://donorsearch.ru&amp;subject=&laquo;DonorSearch&raquo;" title="Опубликовать в своем блоге livejournal.com" class="ico"><img src="img/ico_LJ.png" alt="Опубликовать в своем блоге livejournal.com" width="40" height="40" /></a>
+              
+            </ul>
+            <br />
+            <ul class="nav nav-list" style="padding-left:20px;">
+              <li class="nav-header" style="padding-bottom:5px;">А Еще</li>
+              <p>На сайте <strong><?php echo Users::count(); ?></strong> доноров.</p>
+            </ul>
+          </div>
+          
+          <div class="span3" style="text-align:left;">
+            
+            <img src="/img/donor2.jpg" style="display:block;float:right;padding:5px;" />
+          </div>
+        </div>
+        <br /><br /><br />
+        
+    </div>    </div>
+  </div>
+</div>

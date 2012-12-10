@@ -1,0 +1,255 @@
+<?php
+    $user = User::get();
+    if ( ! $user )
+    {
+        Page::go('/auth');
+    }
+?>
+<meta http-equiv="Cache-Control" content="no-cache">
+<script src="/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/datepicker.css" />
+<script src="/js/locales/bootstrap-datepicker.ru.js"></script>
+<div class="span9" style="outline:0px dotted gray;">
+    <h2 style="margin-top:-8px;">Личный кабинет донора</h2>
+    <style>
+        #donor_form .row-fluid
+        {
+            margin-top: 10px;
+        }
+    </style>
+    <div class="alert alert-block alert-error" style="margin-top:10px;">
+    <h4>Внимание!</h4>
+        <br />
+        <p>Ознакомьтесь с типом сообщений, на которые не стоит реагировать, когда Вас просят о помощи, такие сообщения носят мошеннический характер <a href="/obman">здесь</a></p>
+    </div>
+    <style>
+        .onhovershow
+        {
+            opacity:0.1    
+        }
+        .onhovershow:hover
+        { 
+            color:red;
+            opacity:0.8;
+        }
+    </style>
+<form id="donor_form">
+    <div class="row-fluid">  
+
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Социальные сети:<br />
+            <span style="font-size:0.8em;color:gray;">
+            Это способ связаться с вами. Укажите социальные сети, по которым с Вами можно связаться.</span>
+            </div>
+            <div class="span9">
+            
+            <?php
+            
+                $soc_ava = array();
+                $soc_may = array();
+                
+                foreach( $socnetworks as $name => $s )
+                {
+                    $n = 'sn_' . $name;
+                    if ( $user->$n )
+                    {
+                        $soc_ava[$name] = $s;
+                    }
+                    else
+                    {
+                        $soc_may[$name] = $s;
+                    }
+                }
+                echo '<table cellpadding="5" border="0"><tr>';
+                $cs = count($soc_ava);
+                foreach( $soc_ava as $name => $s )
+                {
+                    $n = 'sn_' . $name;
+                    $onclick = ($cs == 1 ? '$(\'#del_donor\').click();' : 'actions.triggerOnServer(\'socnetwork.remove\',{\'sn\':\'' . $name . '\'});');
+                    echo '<td><a style="margin-right:10px;" target="blank" href="' . $name::getLinkById($user->$n) . '" class="ico"><img src="img/ico_' . $name . '.png" width="40" height="40" title="' . $name::$TITLE . '"></a>
+                    <br /><a href="#" onclick="' . $onclick . 'return false;" style="font-size:10px;" class="onhovershow">Удалить</a>
+                    </td>';
+                }
+                echo '</tr></table>';                               
+            ?>
+            <br />
+            <br />
+            <?php
+            if ( $soc_may)
+            {?>
+                <span>Еще вы можете прикрепить:</span>
+            <br />
+            <br />
+            <?php
+                foreach( $soc_may as $name => $s )
+                {
+                    $n = 'sn_' . $name;
+                    echo '<a sn="' . $name . '" style="margin-right:10px;" target="blank" onclick="socnetwork.auth(\'' . $name . '\');return false;" href="#" class="ico"><img src="img/ico_' . $name . '_nonactive.png" width="40" height="40" title="' . $name::$TITLE . '"></a>&nbsp;&nbsp;&nbsp;';
+                }                              
+            ?>
+                        <br />
+            <br />
+            <?php
+            }?>
+            </div>
+        </div>
+
+
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Я могу сдать:<br /><span style="font-size:0.8em;color:gray;">укажите дату, начиная с которой можете сдавать кровь</span></div>
+            <div class="span9"><input name="opportunity" type="text" value="<?php echo $user->opportunity ? date('d.m.Y', $user->opportunity) : ''; ?>" />
+            <br /><a href="#" style="color: navy;" onclick="$('[name=opportunity]').val('<?php echo date('d.m.Y'); ?>');$('[name=opportunity]').datepicker(); $('[name=opportunity]').datepicker('update');return false;">С сегодняшнего дня</a>
+            </div>
+        </div>
+        <script>
+        $(function(){
+            $('[name=opportunity]').datepicker({'format':'dd.mm.yyyy','locale':'ru'});
+            $('[name=opportunity]').datepicker()
+              .on('changeDate', function(ev){
+                $(this).datepicker('hide');
+              });            
+        });
+            
+        </script>
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Группа крови:</div>
+            <div class="span9">
+                    <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span id="bloodtype_name"><?php echo $user->bloodtype ? $bloodtypes[$user->bloodtype] : 'Не выбрано';?></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                    <?php
+                        foreach( $bloodtypes as $val => $bloodtype )
+                        {
+                            echo '<li><a href="#" onclick="$(\'#bloodtype_name\').html(\'' . $bloodtype . '\');$(\'[name=bloodtype]\').val(' . $val . ');return false;">' . $bloodtype . '</a></li>';    
+                        }
+                    ?>
+                    </ul>
+                  </div>
+                  <input type="hidden" name="bloodtype" value="<?php echo $user->bloodtype; ?>" />      
+            </div>
+        </div>
+        <div class="row-fluid" style="margin-top: 23px;margin-bottom: 27px;">
+            <div class="span3" style='margin-top:5px;'>Телефон:<br /><span style="font-size:0.8em;color:gray;">В международном формате, пример +71234567890</span></div>
+            <div class="span9"><input name="phone" type="text" value="<?php echo $user->phone ? '+' . $user->phone : ''; ?>" />
+                <br /><input style="float:left" type="checkbox" value="1" name="show_phone" <?php echo $user->show_phone ? 'checked="checked" ' : ''; ?> /><label for="show_phone" style="float:left">&nbsp;Разрешить показывать</label>
+            </div>
+        </div>        
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Комментарий:</div>
+            <div class="span9">
+            <textarea style="height: 100px;" name="comment"><?php echo $user->comment; ?></textarea>
+            
+            </div>
+        </div>          
+        <h4 style="margin-top:35px;">Расположение</h4>
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Страна:</div>
+            <div class="span9"><input style="display:block;" method="Countries.searchByName" valuename="country" valuestart="<?php echo $user->country; ?>" id="countryname" data-provide="typeahead" type="text" value="<?php echo $user->countryname; ?>" /></div>
+        </div> 
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Город:</div>
+            <div class="span9"><input style="display:<?php echo ($user->city ? 'block' : 'none'); ?>;" method="Cities.searchByNameAndCountry" valuename="city" valuestart="<?php echo $user->city; ?>" id="cityname" data-provide="typeahead" type="text" value="<?php echo $user->cityname; ?>" /></div>
+        </div>       
+
+ 
+
+<h4 style="margin-top:35px;">Личная информация</h4>
+<?php
+//if ( $user->photo )
+//{
+    ?>
+         <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Фото:</div>
+            <div class="span9">
+                <img id="avatar" class="img-rounded" src="<?php echo ( $user->photo ? $user->photo. ( strpos( $user->photo, '?' ) !== false  ? '&' : '?') . rand(1,534534) : '/img/blank.gif' ); ?>" />
+                
+            <br /><br /><a role="button" onclick="getphotofromsn();return false;" class="btn" href="#modalphoto" data-toggle="modal">Взять Фото из соцсети</a><br /><br />
+            </div>
+        </div>
+        
+<?php //} ?>
+        <input type="hidden" name="photo_sn" value="" />
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Имя:</div>
+            <div class="span9"><input name="first_name" type="text" value="<?php echo $user->first_name; ?>" /></div>
+        </div>
+        <div class="row-fluid"> 
+            <div class="span3" style='margin-top:5px;'>Фамилия:</div>
+            <div class="span9"><input name="last_name" type="text" value="<?php echo $user->last_name; ?>" /></div>
+        </div> 
+
+
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Email:</div>
+            <div class="span9"><input name="email" type="text" value="<?php echo $user->email; ?>" /></div>
+        </div>          
+
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:15px;'>
+                
+            </div>
+            <div class="span9" style='margin-top:15px;'>
+                <button type="submit" class="btn btn-danger">Сохранить</button>
+                <button type="button" class="btn btn-link" id="del_donor" onclick="if (confirm('Вы действительно хотите удалить свою анкету? Информация не подлежит восстановлению!'))actions.triggerOnServer('remove_donor');">Удалить анкету</button>
+            </div>
+        </div>
+                                        
+    </div>  
+</form>
+</div>
+
+<div id="modalphoto" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="myModalLabel">Ваши фото в соц. сетях</h3>
+  </div>
+  <div class="modal-body">
+    <p id="modalphotobody">
+
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+  </div>
+</div>
+
+<script>
+function getphotofromsn()
+{
+    $('#modalphotobody').html('<center><img src="/loader.gif" /></center>');
+    actions.triggerOnServer('socnetwork.photos',{}, function(data){
+        $('#modalphotobody').html(data);
+    });
+}
+function getnewphoto( photo,sn )
+{
+    $('#avatar').attr('src',photo+ ( photo.indexOf('?') > -1 ? '&' : '?' ) + Math.random() );
+    $('[name=photo_sn]').val(sn);
+    $('#modalphoto').modal('hide');
+}
+    $('[valuename=country]').autocomplete( function(){
+        $('[valuename=city]').val('');
+        $('[name=city]').val('');
+        $('#cityname').css('display','block');
+        $('.ard[for=city]').css('display','block');        
+         $('[valuename=city]').get(0).params = {country : parseInt( $('[name=country]').val() ) };
+    });
+    $('[valuename=city]').autocomplete();
+    $('#donor_form').submit(function(){
+        try
+        {
+            $("[type=submit]").attr('disabled','disabled');
+            
+            actions.triggerOnServer('donor_form_submit', $(this).serializeArray() );
+        }
+        catch(e)
+        {
+            alert(e);
+        }            
+        return false;
+    });
+
+</script>

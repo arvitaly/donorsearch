@@ -1,0 +1,157 @@
+<?php
+    $user = User::get();
+    if ( $user )
+    {
+        Page::go('/donor');
+    } 
+	if ( ! isset( $_SESSION['auth'] ) )
+	{
+		Page::go('/auth');
+	}
+    $sn = $_SESSION['auth']['sn'];
+
+    $user_info = $sn::getInfo( $_SESSION['auth']['user_id'] );
+    if ( ! isset( $user_info->bloodtype ) )
+    {
+        $user_info->bloodtype =0;
+    }
+    if ( ! isset( $user_info->country ) )
+    {
+        $user_info->country =0;
+        $user_info->countryname ='';
+        $user_info->city =0;
+        $user_info->cityname ='';        
+    }
+    else
+    {
+        $c = Countries::getByName($user_info->country);
+        if ( $c )
+        {
+            $user_info->countryname = $c->name;
+            $user_info->country = $c->id;
+        }
+        else
+        {
+            $user_info->country =0;
+            $user_info->cityname ='';            
+        }
+        if ( ! isset( $user_info->city ) || ! $user_info->country )
+        {
+            $user_info->city =0;
+            $user_info->cityname ='';
+        }
+        else
+        {
+            $c = Cities::getByCountryAndName($user_info->city, $user_info->country);
+            if ( $c )
+            {
+                $user_info->cityname = $c->name;
+                $user_info->city = $c->id;
+            }
+            else
+            {
+                $user_info->city =0;
+                $user_info->cityname ='';            
+            }
+        }        
+    }
+    if ( ! isset($user_info->photo) )
+    {
+        $user_info->photo='';
+    }
+    $_SESSION['reg'] = $user_info;
+?>
+<div class="span9" style="outline:0px dotted gray;">
+    <h2 style="margin-top:-8px;">Регистрация</h2>
+<form id="reg_form">
+    <div class="row-fluid">
+        <div class="row-fluid">
+            <p>Вы регистрируетесь как донор при помощи социальной сети <?php echo $sn::$TITLE; ?>:</p>
+            
+        </div>    
+        
+        <?php
+            if ( isset($user_info->photo) )
+            {
+        ?>
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Фото:</div>
+            <div class="span9"><img src="<?php echo $user_info->photo; ?>" style="margin-bottom: 10px;" /></div>
+            
+        </div>
+        <?php
+        }?>
+        <input type="hidden" name="photo" value="<?php echo $user_info->photo;?>" />
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Имя:</div>
+            <div class="span9"><input name="first_name" type="text" value="<?php echo $user_info->first_name; ?>" /></div>
+        </div>
+        <div class="row-fluid"> 
+            <div class="span3" style='margin-top:5px;'>Фамилия:</div>
+            <div class="span9"><input name="last_name" type="text" value="<?php echo $user_info->last_name; ?>" /></div>
+        </div> 
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Страна:</div>
+            <div class="span9"><input style="display: block;" method="Countries.searchByName" valuename="country" valuestart="<?php echo $user_info->country; ?>" id="countryname" data-provide="typeahead" type="text" value="<?php echo $user_info->countryname; ?>" /></div>
+        </div> 
+        <div class="row-fluid" id="city_block" style="display:<?php echo ($user_info->city ? 'block' : 'none'); ?>;">
+            <div class="span3" style='margin-top:5px;'>Город:</div>
+            <div class="span9"><input  style="display:block;" method="Cities.searchByNameAndCountry" valuename="city" valuestart="<?php echo $user_info->city; ?>" id="cityname" data-provide="typeahead" type="text" value="<?php echo $user_info->cityname; ?>" /></div>
+        </div> 
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:5px;'>Группа крови:</div>
+            <div class="span9">
+                    <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span id="bloodtype_name">Не выбрано</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                    <?php
+                        foreach( $bloodtypes as $val => $bloodtype )
+                        {
+                            echo '<li><a href="#" onclick="$(\'#bloodtype_name\').html(\'' . $bloodtype . '\');$(\'[name=bloodtype]\').val(' . $val . ');return false;">' . $bloodtype . '</a></li>';    
+                        }
+                    ?>
+                    </ul>
+                  </div>
+                  <input type="hidden" name="bloodtype" value="0" />      
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3" style='margin-top:15px;'>
+                
+            </div>
+            <div class="span9" style='margin-top:15px;'>
+                <button type="submit" class="btn btn-danger">Зарегистрироваться</button>
+            </div>
+        </div>
+                                        
+    </div>
+</form>
+</div>
+<script>
+
+    $('[valuename=country]').autocomplete( function(){
+        $('[valuename=city]').val('');
+        $('[name=city]').val('');
+        $('#city_block').css('display','block');
+        $('.ard[for=city]').css('display','block');          
+         $('[valuename=city]').get(0).params = {country : parseInt( $('[name=country]').val() ) };
+    });
+    $('[valuename=city]').autocomplete();
+    $('#reg_form').submit(function(){
+        try
+        {
+            $("[type=submit]").attr('disabled','disabled');
+            
+            actions.triggerOnServer('reg_form_submit', $(this).serializeArray() );
+        }
+        catch(e)
+        {
+            alert(e);
+        }            
+        return false;
+    });
+
+</script>

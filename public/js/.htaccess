@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule j\.js$ j.php [L]

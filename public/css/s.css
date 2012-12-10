@@ -1,0 +1,38 @@
+[valuename]
+{
+    
+}
+.autocomplete_list
+{
+    width:250px;
+    height:auto;
+    border:1px solid gray;
+    background-color: white;
+    display:none;
+    position: absolute;
+    margin-top:-10px;
+    z-index: 100;
+    
+}
+.autocomplete_list>div
+{
+    cursor: pointer;
+    padding:7px;
+}
+.autocomplete_list>div:hover
+{
+    background-color: #f7f7f7;
+}
+.ard
+{
+width: 20px;
+height: 20px;
+background-image: url('/img/ard.png');
+margin-top: -34px;
+margin-left: 199px;
+position: absolute;
+cursor: pointer;
+background-position: center center;
+background-repeat: no-repeat;
+display: block;
+}

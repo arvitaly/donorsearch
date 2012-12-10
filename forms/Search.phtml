@@ -1,0 +1,179 @@
+<meta http-equiv="Cache-Control" content="no-cache">
+      <!--Content-->
+      <div class="span9" style="outline:0px dotted gray;" id="all_search">
+        
+      <div class="row-fluid">
+        <h2 style="margin:0px;margin-top:-10px;">Поиск доноров</h2>
+      </div>
+      
+      
+      <!--Alert-->
+      <div class="alert alert-block alert-error" style="margin-top:10px;">
+        <h4>Внимание!</h4>
+        <br />
+        <p>
+        Сообщение о срочном поиске доноров для конкретного больного должно ОБЯЗАТЕЛЬНО содержать следующую информацию:</p>
+<p>1) Город (человек может сдать кровь только в том регионе, где он прописан).
+</p><p>
+2) Наименование лечебного учреждения, где находится реципиент, координаты отделения переливания, время работы.
+</p><p>
+3) Данные о реципиенте: имя, возраст, диагноз или причина, которая повлекла за собой необходимость в переливаниях (для адресной сдачи крови эта информация необходима).
+</p><p>
+4) Группа крови, необходимое ее количество, сроки сдачи, ФИО контактного лица.
+</p>
+<p>
+5) Если Вы не знаете всей этой информации о реципиенте, то Ваше сообщение будет расценено как СПАМ - <a href="/obman">вот примеры сообщений</a>, на которые доноры не будут отвечать.
+</p>
+      </div>
+      
+      <div class="row-fluid" style="margin-top:20px;">
+        
+        <div class="span3"><h5 style="margin-top:5px;">Расположение:</h5></div>
+        <div class="span9">
+          
+          <div class="row-fluid">
+<input type="hidden" value="0" name="limit" />
+            <input style="display: block !important;" placeholder="Выберите страну" method="Countries.searchByName" valuename="country" valuestart="" id="countryname" data-provide="typeahead" type="text" value="" />
+            <input style="display:none;margin-top:5px;" placeholder="Выберите город" method="Cities.searchByNameAndCountry" valuename="city" valuestart="" id="cityname" data-provide="typeahead" type="text" value="" />  
+          </div> 
+       </div>
+      </div>
+      
+      
+      <div class="row-fluid" style="margin-top:5px;">
+        
+        <div class="span3"><h5 style="margin-top:5px;">Группа и резус фактор:</h5></div>
+        <div class="span9">
+          
+          <div class="row-fluid">
+                    <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                        <span id="bloodtype_name">Не выбрано</span>
+                        <span class="caret"></span>
+                    </a>
+                    <input type="hidden" value="" name="bloodtype" />
+                    <ul class="dropdown-menu" id="bloodtype_select">
+                    <?php
+                        foreach( $bloodtypes as $val => $bloodtype )
+                        {
+                            echo '<li><a href="javascript:void(0);" value="' . $val . '">' . $bloodtype . '</a></li>';    
+                        }
+                    ?>
+                    </ul>
+                  </div>
+             
+          </div> 
+       </div>
+      </div>
+
+      
+      <!--<div class="row-fluid" style="margin-top:5px;">
+        
+        <div class="span3"></div>
+        <div class="span9">
+          <button class="btn btn-danger" type="button"><i class="icon-search2 icon-white"></i> Найти</button>
+       </div>
+      </div>-->
+
+      <hr>
+      <h4 style="margin-bottom:20px;">Результаты поиска (<span id="result_count"></span>):</h4>
+      
+      
+      <div id="result"></div>
+     <div id="loader"><p>&nbsp;</p><center><img src="/loader.gif" /></center></div>
+        
+    
+        
+      
+    </div>
+
+
+
+<script>
+
+    isSearch = false;
+    isEmpty = true;
+    $('[valuename=country]').autocomplete( function(){
+        $('[valuename=city]').val('');
+        $('[name=city]').val('');
+        $('#cityname').css('display','block');
+        $('.ard[for=city]').css('display','block');
+         $('[valuename=city]').get(0).params = {country : parseInt( $('[name=country]').val() ) };
+         search();
+    });
+    $('[valuename=city]').autocomplete(function(){
+        search();
+    });
+    function search( append )
+    {
+        
+        isSearch = true;
+        if ( ! append )
+        {
+            $('#result').html('');
+            limit = 0;
+        }
+        else
+        {
+            limit = limit + 10;
+        }
+        $('#loader').css('display','block');
+
+        actions.triggerOnServer( 'search', { 'limit' : limit, 'country' : $('[name=country]').val(),'city' : $('[name=city]').val(), 'bloodtype' : $('[name=bloodtype]').val() }, function(data)
+        {
+
+            if ( append )
+            {
+                if ( data )
+                {                
+                    $('#result').append(data);
+                    isEmpty = false;
+                }
+                else
+                {
+                    isEmpty = true;
+                }
+            }
+            else
+            {
+                if ( data )
+                {
+                    $('#result').html(data);
+                    isEmpty = false;
+                }                
+                else
+                {
+                    isEmpty = true;
+                    $("#result").html("<p>Извините, по Вашему запросу ничего не найдено</p>");
+                }
+            }
+            $('#loader').css('display','none');
+
+            isSearch = false;
+        } );
+    }
+    search();
+window.onscroll = function (oEvent) {
+    if ( ! isSearch && ! isEmpty )
+    {
+        var y = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+          if ( y > $(document).height() - window.innerHeight - 150  )
+          {
+            search(true);
+          }        
+    }
+
+}    
+function searchT()
+{
+    
+    search(false);
+}
+$('#bloodtype_select a').click(function(){
+    $('#bloodtype_name').html( $(this).html() );
+    
+    $('[name=bloodtype]').val($(this).attr('value'));
+    
+    searchT(); 
+});
+</script>    

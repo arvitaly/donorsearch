@@ -1,0 +1,67 @@
+<div class="row-fluid">
+            <div class="span3" style="outl5ine:1px dotted gray;">
+        
+        <ul class="nav nav-tabs nav-stacked">
+          <li><a href="/donor">Мой Профиль</a></li>
+          <li><a href="/search">Поиск Донора</a></li>
+          <li><a target="_blank" rel="nofollow" href="/info">О Донорстве</a></li>
+          <li><a href="/obman">Осторожно, мошенники!</a></li>
+          <li><a target="_blank" rel="nofollow" href="https://vk.com/donorsearch_ru?w=wall-32795823_78">Волонтерам</a></li>
+          <li><a href="/about">О Проекте</a></li>          
+          <li><a href="/help">Помощь проекту</a></li>
+          
+        </ul>
+        
+       <div style="text-align:left;position:relative;padding:15px;top:10px;" class="thumbnail"><strong>Новость</strong><br><small>Центр крови Федерального медико-биологического агентства с 1 декабря 2012 года начинает регулярную работу в субботние дни&nbsp;<a href="http://vk.com/public_donorsearch?w=wall-31174361_134" style="text-decoration:underline;"> читать полностью..</a> </small></div>
+       <br>
+       <div style="text-align:left;position:relative;padding:15px;top:10px;" class="thumbnail"><strong>Факт о донорстве</strong><br><small>По данным исследования Всемирной организации здравоохранения, те, кто постоянно сдает кровь, в среднем живут дольше на 5 лет.</small></div>
+           
+      </div>
+      
+      <?php
+      try
+      {
+            ob_start();
+            switch ( $_SERVER['REQUEST_URI'])
+            {
+                case '/donor':
+                    require 'Donor.phtml';
+                break;
+                case '/reg':
+                    require 'Registration.phtml';
+                break;
+                case '/search':
+                    require 'Search.phtml';
+                break;
+                case '/auth':
+                    require 'Auth.phtml';
+                break; 
+                case '/about':
+                    require 'About.phtml';
+                break; 
+                case '/info':
+                    require 'Info.phtml';
+                break;                                           
+                case '/volonters':
+                    require 'Volonters.phtml';
+                break; 
+                case '/help':
+                    require 'Help.phtml';
+                break;   
+                case '/obman':
+                    require 'Obman.phtml';
+                break;                               
+                default:
+                    throw new Exception('Error');        
+            }
+        }
+        catch(Exception $exception)
+        {
+            ob_end_clean();
+            echo 'Произошла ошибка ' . $exception;
+        }
+      ?>
+
+    <br>
+
+  </div>

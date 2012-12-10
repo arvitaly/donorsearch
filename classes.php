@@ -212,13 +212,13 @@
         {
 			if ( ! isset( $_COOKIE['vk_app_' . self::$APP_ID] ) )
 			{
-				throw new SocnetworkException( 'VK::Invalid auth error' ) ;
+				throw new SocnetworkException( 'VK::Не найдена cookie ВКонтакте' ) ;
 			}
 			$member = authOpenAPIMember() ;
 
 			if ( $member === false )
 			{
-				throw new SocnetworkException( 'VK::Invalid auth error' ) ;
+				throw new SocnetworkException( 'VK::Не удалось получить пользователя из cookie' ) ;
 			}
             $user_id = $member['id'];
             return $user_id;            

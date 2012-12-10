@@ -9,9 +9,6 @@
     {
         throw new Exception('Not sn');
     }
-
-    try
-    {
         $user_id = $sn::auth();
      
         $user=User::get();
@@ -56,9 +53,4 @@
                 Page::go('/reg');
             }            
         }
-    }
-    catch(Exception $exception)
-    {
-        alert($exception);
-    }
     

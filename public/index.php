@@ -1,4 +1,6 @@
 <?php
+try
+{
     ob_start();
 
     chdir('..');
@@ -26,3 +28,8 @@
         Request::setType( Request::TYPE_PAGE );
         require 'page.php';
     }
+}
+catch(Exception $exception)
+{
+    jsconsole($exception, 1);
+}

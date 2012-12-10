@@ -52,7 +52,7 @@
 			//echo $this->message ;
             if ( Request::TYPE_EVENT  || Request::TYPE_METHOD )
             {
-                //alert($errstr);
+                alert($errstr );
                 exit;
             }
 			header( "HTTP/1.0 404 Not Found" ) ;
@@ -323,10 +323,12 @@
 	}
 
 
-	function jsconsole( $str )
+	function jsconsole( $str, $level = 0 )
 	{
+	   if ( $level == 0 )
 	   return;
-		if ( ( isset( $_SERVER ) && isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ) || ( class_exists( 'Request' ) && Request::get( 'Vika-Request-Type' ) ) )
+		//if ( ( isset( $_SERVER ) && isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ) || ( class_exists( 'Request' ) && Request::get( 'Vika-Request-Type' ) ) )
+        if ( Request::type() == Request::TYPE_EVENT || Request::type() == Request::TYPE_METHOD )
 		{
 
 			echo 'console.log(' . json_encode( $str ) . ');' ;
@@ -339,7 +341,15 @@
 	}
 	function alert( $str )
 	{
-		echo 'alert("' . iconv( 'WINDOWS-1251', 'UTF-8', $str ) . '");' ;
+	   if ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) )
+       {
+        echo 'alert("' . json_encode( $str ) . '");' ;
+       }
+       else
+       {
+        echo '<script>alert("' . json_encode( $str ) . '");</script>' ;
+       }
+		
 	}
 	ini_set( "mysql.default_port", 3306 ) ;
 	ini_set( "mysql.default_host", DBHOST ) ;

@@ -1,4 +1,5 @@
 <?php
+    Request::setType(Request::TYPE_PAGE);
                 $sql = ' from accounts a inner join countries c on c.id=a.country inner join cities ct on ct.id=city where opportunity <=' . time() . ' and bloodtype <> 0 ';
                 
                 if ( isset($_POST['country']) && $_POST['country'] )
@@ -51,7 +52,7 @@ if ( $_POST['limit'] == 0 )
 }
 ?>
       <div class="row-fluid thumbnail" style="margin-top:10px;">
-        <div class="span3" style="width:100px;height:100px;text-align: center;padding-top:13px;"><img src="<?php echo $user->photo; ?>" class="img-rounded"></div>
+        <div class="span3" style="width:100px;height:100px;text-align: center;padding-top:13px;"><img style="height: 70px;" src="<?php echo $user->photo; ?>" class="img-rounded"></div>
         <div class="span3"><h5 style="mar5gin-top:0px;"><?php echo $user->first_name; ?><br><?php echo $user->last_name; ?></h5><span style="font-size:<?php echo ( $user->bloodtype == 9 ? '1' : '2' ); ?>em;"><?php echo $user->bloodname; ?></span></div>
         <div class="span6">
           <div class="row-fluid" style="position:relative;top:5px;margin-left: 7px;">
@@ -72,7 +73,7 @@ if ( $_POST['limit'] == 0 )
                     $n = 'sn_' . $name;
                     if ( $user->$n )
                     {
-                        echo '<a target="_blank" href="' . $name::getLinkById( $user->$n ) . '" class="ico"><img src="img/ico_' . $name . '.png" width="30" height="30" title="' . $name::TITLE . '"></a>&nbsp; ';
+                        echo '<a target="_blank" href="' . $name::getLinkById( $user->$n ) . '" class="ico"><img src="img/ico_' . $name . '.png" width="30" height="30" title="' . $name::$TITLE . '"></a>&nbsp; ';
                     }
                 }
             ?>

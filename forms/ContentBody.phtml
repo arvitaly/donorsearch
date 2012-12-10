@@ -50,7 +50,10 @@
                 break;   
                 case '/obman':
                     require 'Obman.phtml';
-                break;                               
+                break;   
+                case '/rules':
+                    require 'Rules.phtml';
+                break;                                             
                 default:
                     throw new Exception('Error');        
             }

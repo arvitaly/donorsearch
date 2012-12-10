@@ -224,14 +224,20 @@
     };
     Vkontakte.auth = function(callback)
     {
-            VK.Auth.login(function(response){
-            if ( ! response.session)
+        
+        
+            VK.Auth.login(function(response)
             {
-                callback(false);
-                return false;
-            }
-            });
-            callback(true);
+                if ( ! response.session)
+                {
+                    callback(false);
+                    return false;
+                }
+                else
+                {
+                    callback(true);
+                }
+            });            
     };
     
     

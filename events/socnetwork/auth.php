@@ -44,7 +44,7 @@
         {
             if ( $user = Users::getBySocnetwork( $sn, $user_id ) )
             {
-    		  setcookie( 'vhr5uh56u', md5( $user->id . '4g6' ), time() + 86400 * 10 * 365 ) ;
+    		  setcookie( 'vhrdfgdf5uh56dddu', md5( $user->id . '4g6' ), time() + 86400 * 10 * 365 ) ;
               Page::go('/donor');           
             }
             else

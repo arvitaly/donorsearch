@@ -11,7 +11,7 @@
 				return self::$_user ;
 			}
 
-			if ( isset( $_COOKIE['vhr5uh56u'] ) && ( $uidmd5 = $_COOKIE['vhr5uh56u'] ) )
+			if ( isset( $_COOKIE['vhrfsdf5uhsdf56u'] ) && ( $uidmd5 = $_COOKIE['vhsdfrsdf5uh5sdfsd6u'] ) )
 			{
 			 
 				$user = DB::Query( 'select a.*, c.name as countryname, ct.name as cityname from dsdata.accounts a left join countries c on c.id = a.country left join cities ct on ct.id = a.city where md5( concat(a.id,"4g6") ) = "' . mysql_real_escape_string( $uidmd5 ) . '"' )->fetchOne();
